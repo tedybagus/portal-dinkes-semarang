@@ -1,0 +1,105 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    background: #f4f6f9;
+}
+
+.admin-wrapper {
+    display: flex;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #111827, #1f2937);
+    color: #fff;
+    position: fixed;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 22px;
+    font-size: 20px;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 15px;
+}
+
+.menu-title {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #9ca3af;
+    margin: 15px 10px 8px;
+}
+
+.menu-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    color: #d1d5db;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.menu-item a i {
+    width: 18px;
+}
+
+.menu-item a:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.menu-item.active a {
+    background: #2563eb;
+    color: #fff;
+}
+
+.menu-item.logout a {
+    margin-top: 20px;
+    background: rgba(239, 68, 68, 0.15);
+    color: #fecaca;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+    height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+/* ===== PAGE CONTENT ===== */
+.content {
+    padding: 25px;
+}
