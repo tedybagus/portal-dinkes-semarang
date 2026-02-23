@@ -6,8 +6,7 @@ nixPkgs = [
   "php82Extensions.zip",
   "php82Extensions.pdo_mysql",
   "php82Extensions.opcache",
-  "nodejs_18",
-  "composer"
+  "nodejs_18"
 ]
 
 [phases.install]
