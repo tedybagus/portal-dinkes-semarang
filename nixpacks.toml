@@ -2,9 +2,9 @@
 nixPkgs = [
   "php",
   "php82Extensions.gd",
-  "php82Extensions.pdo_mysql",
-  "php82Extensions.zip",
   "php82Extensions.mbstring",
+  "php82Extensions.zip",
+  "php82Extensions.pdo_mysql",
   "php82Extensions.opcache",
   "nodejs_18",
   "composer"
