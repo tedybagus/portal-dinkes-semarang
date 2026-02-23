@@ -7,13 +7,13 @@ nixPkgs = [
   "php82Extensions.pdo_mysql",
   "php82Extensions.opcache",
   "phpPackages.composer",
-  "nodejs_18"
+  "nodejs_20"
 ]
 
 [phases.install]
 cmds = [
   "composer install --no-dev --no-scripts --optimize-autoloader",
-  "npm install --omit=dev"
+  "npm install"
 ]
 
 [phases.build]
