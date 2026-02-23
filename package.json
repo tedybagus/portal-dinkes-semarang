@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "postinstall": "npm run build"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
@@ -21,5 +22,8 @@
         "@fortawesome/fontawesome-free": "^7.1.0",
         "bootstrap": "^5.3.8",
         "jquery": "^4.0.0"
-    }
+    },
+    "engines": {
+    "node": "18.x"
+}
 }
