@@ -25,7 +25,11 @@ RUN npm install && npm run build
 EXPOSE 8080
 
 # Start Laravel
-CMD php artisan optimize:clear && \
+CMD chmod -R 775 storage bootstrap/cache && \
     php artisan key:generate --force && \
+    php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
     php artisan migrate --force || true && \
     php -S 0.0.0.0:$PORT -t public
