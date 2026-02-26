@@ -6,7 +6,7 @@
 -- Generation Time: Feb 23, 2026 at 02:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
-USE railway;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -27,7 +27,26 @@ SET time_zone = "+00:00";
 -- Table structure for table `announcements`
 --
 
+CREATE TABLE `announcements` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
+  `file_type` varchar(255) DEFAULT NULL,
+  `file_size` int(11) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `view_count` int(11) NOT NULL DEFAULT 0,
+  `is_pinned` tinyint(1) NOT NULL DEFAULT 0,
+  `start_date` timestamp NULL DEFAULT NULL,
+  `end_date` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
 -- Dumping data for table `announcements`
 --
 
@@ -40,6 +59,25 @@ INSERT INTO `announcements` (`id`, `title`, `content`, `file_path`, `file_name`,
 -- Table structure for table `articles`
 --
 
+CREATE TABLE `articles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `category_id` bigint(20) UNSIGNED NOT NULL,
+  `author_id` bigint(20) UNSIGNED NOT NULL,
+  `department_id` bigint(20) UNSIGNED NOT NULL,
+  `reviewer_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `status` enum('pending','approved','rejected','published') NOT NULL DEFAULT 'pending',
+  `views` int(11) NOT NULL DEFAULT 0,
+  `rejection_reason` text DEFAULT NULL,
+  `reviewed_at` timestamp NULL DEFAULT NULL,
+  `published_at` timestamp NULL DEFAULT NULL,
+  `article_date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `articles`
@@ -55,6 +93,21 @@ INSERT INTO `articles` (`id`, `title`, `slug`, `content`, `image`, `category_id`
 -- Table structure for table `article_comments`
 --
 
+CREATE TABLE `article_comments` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `article_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `comment` text NOT NULL,
+  `rating` tinyint(4) NOT NULL DEFAULT 5,
+  `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `approved_at` timestamp NULL DEFAULT NULL,
+  `approved_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `rejection_reason` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `article_comments`
@@ -70,6 +123,11 @@ INSERT INTO `article_comments` (`id`, `article_id`, `name`, `comment`, `rating`,
 -- Table structure for table `cache`
 --
 
+CREATE TABLE `cache` (
+  `key` varchar(255) NOT NULL,
+  `value` mediumtext NOT NULL,
+  `expiration` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -77,6 +135,11 @@ INSERT INTO `article_comments` (`id`, `article_id`, `name`, `comment`, `rating`,
 -- Table structure for table `cache_locks`
 --
 
+CREATE TABLE `cache_locks` (
+  `key` varchar(255) NOT NULL,
+  `owner` varchar(255) NOT NULL,
+  `expiration` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -84,6 +147,15 @@ INSERT INTO `article_comments` (`id`, `article_id`, `name`, `comment`, `rating`,
 -- Table structure for table `categories`
 --
 
+CREATE TABLE `categories` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `categories`
@@ -104,6 +176,37 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `description`, `is_active`, `cre
 -- Table structure for table `complaints`
 --
 
+CREATE TABLE `complaints` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `ticket_number` varchar(255) NOT NULL,
+  `complaint_service_id` bigint(20) UNSIGNED NOT NULL,
+  `reporter_name` varchar(255) NOT NULL,
+  `reporter_nik` varchar(16) DEFAULT NULL,
+  `reporter_address` text DEFAULT NULL,
+  `reporter_phone` varchar(20) NOT NULL,
+  `reporter_email` varchar(255) DEFAULT NULL,
+  `subject` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `location` text DEFAULT NULL,
+  `incident_date` date DEFAULT NULL,
+  `evidence_file` varchar(255) DEFAULT NULL,
+  `evidence_file_size` varchar(255) DEFAULT NULL,
+  `status` enum('submitted','verified','in_progress','resolved','closed','rejected') NOT NULL DEFAULT 'submitted',
+  `priority` enum('low','medium','high','urgent') NOT NULL DEFAULT 'medium',
+  `admin_notes` text DEFAULT NULL,
+  `response` text DEFAULT NULL,
+  `response_file` varchar(255) DEFAULT NULL,
+  `assigned_to` varchar(255) DEFAULT NULL,
+  `satisfaction_rating` int(11) DEFAULT NULL,
+  `feedback` text DEFAULT NULL,
+  `view_count` int(11) NOT NULL DEFAULT 0,
+  `download_count` int(11) NOT NULL DEFAULT 0,
+  `verified_at` timestamp NULL DEFAULT NULL,
+  `resolved_at` timestamp NULL DEFAULT NULL,
+  `closed_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `complaints`
@@ -123,6 +226,19 @@ INSERT INTO `complaints` (`id`, `ticket_number`, `complaint_service_id`, `report
 -- Table structure for table `complaint_flows`
 --
 
+CREATE TABLE `complaint_flows` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `step_number` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `duration_days` int(11) DEFAULT NULL,
+  `order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Dumping data for table `complaint_flows`
 --
@@ -140,6 +256,15 @@ INSERT INTO `complaint_flows` (`id`, `step_number`, `title`, `description`, `ico
 -- Table structure for table `complaint_histories`
 --
 
+CREATE TABLE `complaint_histories` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `complaint_id` bigint(20) UNSIGNED NOT NULL,
+  `status` enum('submitted','verified','in_progress','resolved','closed','rejected') NOT NULL,
+  `description` text NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `complaint_histories`
@@ -163,6 +288,18 @@ INSERT INTO `complaint_histories` (`id`, `complaint_id`, `status`, `description`
 -- Table structure for table `complaint_services`
 --
 
+CREATE TABLE `complaint_services` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `color` varchar(7) NOT NULL DEFAULT '#3b82f6',
+  `order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `complaint_services`
@@ -182,6 +319,14 @@ INSERT INTO `complaint_services` (`id`, `name`, `slug`, `description`, `icon`, `
 -- Table structure for table `departments`
 --
 
+CREATE TABLE `departments` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `reviewer_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `departments`
@@ -198,6 +343,16 @@ INSERT INTO `departments` (`id`, `name`, `slug`, `reviewer_id`, `created_at`, `u
 -- Table structure for table `failed_jobs`
 --
 
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `uuid` varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Dumping data for table `failed_jobs`
 --
@@ -213,6 +368,17 @@ INSERT INTO `failed_jobs` (`id`, `uuid`, `connection`, `queue`, `payload`, `exce
 -- Table structure for table `faqs`
 --
 
+CREATE TABLE `faqs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `pertanyaan` varchar(255) NOT NULL,
+  `jawaban` text NOT NULL,
+  `kategori` varchar(255) NOT NULL DEFAULT 'Umum',
+  `urutan` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `view_count` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `faqs`
@@ -235,6 +401,17 @@ INSERT INTO `faqs` (`id`, `pertanyaan`, `jawaban`, `kategori`, `urutan`, `is_act
 -- Table structure for table `fasyankes`
 --
 
+CREATE TABLE `fasyankes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `klinik_id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `kode` varchar(50) NOT NULL,
+  `alamat` text DEFAULT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `fasyankes`
@@ -255,6 +432,16 @@ INSERT INTO `fasyankes` (`id`, `klinik_id`, `nama`, `kode`, `alamat`, `latitude`
 -- Table structure for table `health_profiles`
 --
 
+CREATE TABLE `health_profiles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `file_type` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `view_count` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `download_count` int(10) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `health_profiles`
@@ -275,6 +462,19 @@ INSERT INTO `health_profiles` (`id`, `name`, `file_path`, `file_type`, `created_
 -- Table structure for table `images`
 --
 
+CREATE TABLE `images` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `image_path` varchar(255) NOT NULL,
+  `alt_text` varchar(255) DEFAULT NULL,
+  `type` enum('gallery','hero','banner') NOT NULL DEFAULT 'gallery',
+  `order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `uploaded_by` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `images`
@@ -296,6 +496,15 @@ INSERT INTO `images` (`id`, `title`, `description`, `image_path`, `alt_text`, `t
 -- Table structure for table `information_faqs`
 --
 
+CREATE TABLE `information_faqs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `answer` text NOT NULL,
+  `order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -303,6 +512,17 @@ INSERT INTO `images` (`id`, `title`, `description`, `image_path`, `alt_text`, `t
 -- Table structure for table `information_flows`
 --
 
+CREATE TABLE `information_flows` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `step_number` int(11) NOT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `duration_days` int(11) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `information_flows`
@@ -322,6 +542,15 @@ INSERT INTO `information_flows` (`id`, `title`, `description`, `step_number`, `i
 -- Table structure for table `information_followups`
 --
 
+CREATE TABLE `information_followups` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `information_request_id` bigint(20) UNSIGNED NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `information_followups`
@@ -340,6 +569,30 @@ INSERT INTO `information_followups` (`id`, `information_request_id`, `status`, `
 -- Table structure for table `information_requests`
 --
 
+CREATE TABLE `information_requests` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `registration_number` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `address` text NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `id_card_number` varchar(255) NOT NULL,
+  `id_card_file` varchar(255) DEFAULT NULL,
+  `requester_type` enum('perorangan','kelompok','organisasi') NOT NULL DEFAULT 'perorangan',
+  `information_needed` text NOT NULL,
+  `information_purpose` text NOT NULL,
+  `information_format` enum('softcopy','hardcopy','keduanya') NOT NULL DEFAULT 'softcopy',
+  `delivery_method` enum('langsung','pos','email','kurir') NOT NULL DEFAULT 'email',
+  `status` enum('submitted','verified','processed','ready','completed','rejected') NOT NULL DEFAULT 'submitted',
+  `rejection_reason` text DEFAULT NULL,
+  `admin_notes` text DEFAULT NULL,
+  `result_file` varchar(255) DEFAULT NULL,
+  `submitted_at` datetime NOT NULL,
+  `processed_at` datetime DEFAULT NULL,
+  `completed_at` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `information_requests`
@@ -354,6 +607,15 @@ INSERT INTO `information_requests` (`id`, `registration_number`, `name`, `addres
 -- Table structure for table `jobs`
 --
 
+CREATE TABLE `jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) UNSIGNED NOT NULL,
+  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
+  `available_at` int(10) UNSIGNED NOT NULL,
+  `created_at` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `jobs`
@@ -368,6 +630,18 @@ INSERT INTO `jobs` (`id`, `queue`, `payload`, `attempts`, `reserved_at`, `availa
 -- Table structure for table `job_batches`
 --
 
+CREATE TABLE `job_batches` (
+  `id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `total_jobs` int(11) NOT NULL,
+  `pending_jobs` int(11) NOT NULL,
+  `failed_jobs` int(11) NOT NULL,
+  `failed_job_ids` longtext NOT NULL,
+  `options` mediumtext DEFAULT NULL,
+  `cancelled_at` int(11) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `finished_at` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -375,6 +649,17 @@ INSERT INTO `jobs` (`id`, `queue`, `payload`, `attempts`, `reserved_at`, `availa
 -- Table structure for table `kliniks`
 --
 
+CREATE TABLE `kliniks` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `kode` varchar(10) NOT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `color` varchar(255) NOT NULL DEFAULT 'info',
+  `deskripsi` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `kliniks`
@@ -393,6 +678,18 @@ INSERT INTO `kliniks` (`id`, `nama`, `kode`, `icon`, `color`, `deskripsi`, `is_a
 -- Table structure for table `menus`
 --
 
+CREATE TABLE `menus` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `route_name` varchar(255) DEFAULT NULL,
+  `role_slug` varchar(255) NOT NULL,
+  `parent_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `menus`
@@ -440,6 +737,11 @@ INSERT INTO `menus` (`id`, `name`, `icon`, `route_name`, `role_slug`, `parent_id
 -- Table structure for table `migrations`
 --
 
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -490,12 +792,33 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- Table structure for table `password_reset_tokens`
 --
 
+CREATE TABLE `password_reset_tokens` (
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `pejabat_struktural`
 --
 
+CREATE TABLE `pejabat_struktural` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(150) NOT NULL,
+  `jabatan` varchar(150) NOT NULL,
+  `nip` varchar(50) DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `pendidikan` varchar(100) DEFAULT NULL,
+  `riwayat_jabatan` text DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pejabat_struktural`
@@ -514,7 +837,19 @@ INSERT INTO `pejabat_struktural` (`id`, `nama`, `jabatan`, `nip`, `foto`, `pendi
 -- Table structure for table `ppid_categories`
 --
 
+CREATE TABLE `ppid_categories` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `color` varchar(7) NOT NULL DEFAULT '#3b82f6',
+  `order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
 -- Dumping data for table `ppid_categories`
 --
 
@@ -530,6 +865,15 @@ INSERT INTO `ppid_categories` (`id`, `name`, `slug`, `description`, `color`, `or
 -- Table structure for table `ppid_download_logs`
 --
 
+CREATE TABLE `ppid_download_logs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `ppid_information_id` bigint(20) UNSIGNED NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `downloaded_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -537,12 +881,56 @@ INSERT INTO `ppid_categories` (`id`, `name`, `slug`, `description`, `color`, `or
 -- Table structure for table `ppid_informations`
 --
 
+CREATE TABLE `ppid_informations` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `ppid_category_id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `information_number` varchar(100) DEFAULT NULL,
+  `type` varchar(100) DEFAULT NULL,
+  `responsible_unit` varchar(100) DEFAULT NULL,
+  `information_format` varchar(50) DEFAULT NULL,
+  `year` year(4) NOT NULL DEFAULT year(curdate()),
+  `published_date` date DEFAULT NULL,
+  `validity_period` date DEFAULT NULL,
+  `permanent_validity` tinyint(1) NOT NULL DEFAULT 0,
+  `file_path` varchar(255) DEFAULT NULL,
+  `file_size` varchar(50) DEFAULT NULL,
+  `external_link` varchar(255) DEFAULT NULL,
+  `keywords` text DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `is_public` tinyint(1) NOT NULL DEFAULT 1,
+  `view_count` int(11) NOT NULL DEFAULT 0,
+  `download_count` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `produk_hukum`
 --
 
+CREATE TABLE `produk_hukum` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nomor` varchar(255) NOT NULL,
+  `tahun` int(11) NOT NULL,
+  `kategori` varchar(255) NOT NULL,
+  `tentang` text NOT NULL,
+  `tanggal_penetapan` date NOT NULL,
+  `tanggal_berlaku` date DEFAULT NULL,
+  `status` enum('berlaku','tidak_berlaku','draft') NOT NULL DEFAULT 'berlaku',
+  `file_path` varchar(255) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_size` int(11) NOT NULL,
+  `keterangan` text DEFAULT NULL,
+  `download_count` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `produk_hukum`
@@ -558,7 +946,24 @@ INSERT INTO `produk_hukum` (`id`, `nomor`, `tahun`, `kategori`, `tentang`, `tang
 -- Table structure for table `reviews`
 --
 
-
+CREATE TABLE `reviews` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `reviewer_name` varchar(255) NOT NULL,
+  `reviewer_email` varchar(255) DEFAULT NULL,
+  `reviewer_phone` varchar(255) DEFAULT NULL,
+  `reviewer_photo` varchar(255) DEFAULT NULL,
+  `rating` int(11) NOT NULL,
+  `review_text` text NOT NULL,
+  `service_type` varchar(255) DEFAULT NULL,
+  `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `approved_at` timestamp NULL DEFAULT NULL,
+  `approved_by` varchar(255) DEFAULT NULL,
+  `ip_address` varchar(255) DEFAULT NULL,
+  `tracking_code` varchar(20) DEFAULT NULL,
+  `view_count` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `reviews`
@@ -585,7 +990,13 @@ INSERT INTO `reviews` (`id`, `reviewer_name`, `reviewer_email`, `reviewer_phone`
 -- Table structure for table `review_services`
 --
 
-
+CREATE TABLE `review_services` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `review_id` bigint(20) UNSIGNED NOT NULL,
+  `service_type` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -593,6 +1004,14 @@ INSERT INTO `reviews` (`id`, `reviewer_name`, `reviewer_email`, `reviewer_phone`
 -- Table structure for table `roles`
 --
 
+CREATE TABLE `roles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `roles`
@@ -609,7 +1028,14 @@ INSERT INTO `roles` (`id`, `name`, `slug`, `description`, `created_at`, `updated
 -- Table structure for table `sessions`
 --
 
-
+CREATE TABLE `sessions` (
+  `id` varchar(255) NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `payload` longtext NOT NULL,
+  `last_activity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sessions`
@@ -624,7 +1050,22 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 -- Table structure for table `standar_pelayanans`
 --
 
-
+CREATE TABLE `standar_pelayanans` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `kategori` varchar(255) NOT NULL DEFAULT 'Perizinan',
+  `deskripsi` text DEFAULT NULL,
+  `persyaratan` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`persyaratan`)),
+  `catatan` text DEFAULT NULL,
+  `icon` varchar(255) NOT NULL DEFAULT 'fa-file-alt',
+  `warna` varchar(255) NOT NULL DEFAULT '#f59e0b',
+  `urutan` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `view_count` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `standar_pelayanans`
@@ -649,7 +1090,16 @@ INSERT INTO `standar_pelayanans` (`id`, `nama`, `slug`, `kategori`, `deskripsi`,
 -- Table structure for table `struktur_organisasi`
 --
 
-
+CREATE TABLE `struktur_organisasi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -657,6 +1107,16 @@ INSERT INTO `standar_pelayanans` (`id`, `nama`, `slug`, `kategori`, `deskripsi`,
 -- Table structure for table `tupoksi`
 --
 
+CREATE TABLE `tupoksi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `tugas_pokok` text NOT NULL,
+  `fungsi` text NOT NULL,
+  `order` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tupoksi`
@@ -673,6 +1133,19 @@ INSERT INTO `tupoksi` (`id`, `title`, `tugas_pokok`, `fungsi`, `order`, `is_acti
 -- Table structure for table `users`
 --
 
+CREATE TABLE `users` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `role_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `department_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
@@ -695,6 +1168,16 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 -- Table structure for table `visi_misi`
 --
 
+CREATE TABLE `visi_misi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `visi` text NOT NULL,
+  `misi` text NOT NULL,
+  `motto` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `visi_misi`
